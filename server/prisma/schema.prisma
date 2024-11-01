@@ -16,7 +16,7 @@ datasource db {
 model User {
   id Int @id @default(autoincrement())
 
-  name String @db.Varchar(191)
+  name String @db.VarChar(191)
 
   email String @unique
 
@@ -30,5 +30,5 @@ model User {
 
   email_verify_token String?
 
-  created_at  DateTime @default((now()))
+  created_at DateTime @default(now())
 }

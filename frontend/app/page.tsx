@@ -1,8 +1,11 @@
+import HeroSection from "@/components/base/HeroSection"
 import { Button } from "@/components/ui/button"
 
 export default function Home() {
   return (
-    <><h1>SALAM Frontend</h1>
-      <Button>Next</Button></>
-  );
+    <div>
+      {/* <Button variant="outline">Click me</Button> */}
+      <HeroSection/>
+    </div>
+  )
 }
