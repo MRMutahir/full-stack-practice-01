@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
-    "rootDirs": ["src"],
-    "outDir": "dist",
-    "lib": ["es2020"],
-    "target": "es2020",
-    "module": "Node16",
-    "moduleResolution": "Node16",
-    "esModuleInterop": true,
-    "types": ["node"]
+    "rootDir": "src",                     // Use rootDir instead of rootDirs
+    "outDir": "dist",                     // Output directory for compiled files
+    "lib": ["es2022"],                    // Library to include in compilation
+    "target": "es2022",                   // ECMAScript target version
+    "module": "es2022",                   // Module system to use
+    "moduleResolution": "Node",            // Module resolution strategy
+    "esModuleInterop": true,               // Enables emit interoperability between CommonJS and ES Modules
+    "strict": true,                        // Enable all strict type-checking options
+    "skipLibCheck": true,                  // Skip type checking of declaration files for faster builds (optional)
+    "forceConsistentCasingInFileNames": true // Ensures consistent file naming across platforms (optional)
   },
-  "include": ["src"]
+  "include": ["src/**/*"],                 // Include all files in src directory
+  "exclude": ["node_modules"]              // Exclude node_modules from compilation
 }

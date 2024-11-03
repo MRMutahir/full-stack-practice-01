@@ -1,15 +1,33 @@
 import express, { Application, Request, Response, NextFunction } from "express";
+import "dotenv/config";
+import path from "path";
+import { fileURLToPath } from "url";
 
-import "dotenv/config.js"
+const app: Application = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-const app: Application = express()
+const url = import.meta.url;
 
+const __dirname = path.dirname(fileURLToPath(url));
+app.set("view engine", "ejs");
+app.set("views", path.resolve(__dirname, "./views"));
 
-const PORT = process.env.PORT || 1114
+const PORT = process.env.PORT || 1114;
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
-    res.send("SALAM i am working")
-})
+  // res.send("SALAM")
+  res.render("wellcome"); // Ensure that this file exists in the views folder
+});
+
+// Error handling middleware
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error(err.stack);
+  res.status(500).send(`${err.stack}`);
+});
+
 app.listen(PORT, () => {
-    console.log(`server is running on port ${PORT} `)
-})
+  console.log(`Server is running on port ${PORT}`);
+});
+
+

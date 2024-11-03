@@ -2,14 +2,18 @@
   "scripts": {
     "start": "node ./dist/index.js",
     "server": "nodemon ./dist/index.js",
-    "dev": "concurrently \"yarn watch \" \"yarn server\"",
+    "dev": "concurrently \"yarn watch \" \"yarn server\"   \"yarn watch-views\"",
     "watch": "tsc -w",
-    "build": "tsc"
+    "build": "tsc && yarn copy-files",
+    "copy-files":"copyfiles -u 1 \"src/views/**/*\" dist/",
+    "watch-views":"nodemon --watch src/views -e ejs -x \"yarn copy-files\""
   },
   "dependencies": {
     "@prisma/client": "^5.21.1",
+    "copyfiles": "^2.4.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
     "express": "^4.21.1",
     "prisma": "^5.21.1",
     "type": "module"
