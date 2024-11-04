@@ -5,8 +5,8 @@
     "dev": "concurrently \"yarn watch \" \"yarn server\"   \"yarn watch-views\"",
     "watch": "tsc -w",
     "build": "tsc && yarn copy-files",
-    "copy-files":"copyfiles -u 1 \"src/views/**/*\" dist/",
-    "watch-views":"nodemon --watch src/views -e ejs -x \"yarn copy-files\""
+    "copy-files": "copyfiles -u 1 \"src/views/**/*\" dist/",
+    "watch-views": "nodemon --watch src/views -e ejs -x \"yarn copy-files\""
   },
   "dependencies": {
     "@prisma/client": "^5.21.1",
@@ -15,12 +15,13 @@
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.21.1",
-    "prisma": "^5.21.1",
-    "type": "module"
+    "nodemailer": "^6.9.16",
+    "prisma": "^5.21.1"
   },
   "name": "full-stack-web-01",
   "version": "1.0.0",
   "description": "full stack practice 01",
+  "type": "module",
   "main": "index.js",
   "repository": "https://github.com/MRMutahir/full-stack-practice-01.git",
   "author": "Muhammad Mutahir",
