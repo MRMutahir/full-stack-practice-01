@@ -2,6 +2,8 @@ import express, { Application, Request, Response, NextFunction } from "express";
 import "dotenv/config";
 import path from "path";
 import { fileURLToPath } from "url";
+import ejs, { name } from "ejs";
+import { sendEmail } from "./config/mail.js";
 
 const app: Application = express();
 app.use(express.json());
@@ -15,12 +17,37 @@ app.set("views", path.resolve(__dirname, "./views"));
 
 const PORT = process.env.PORT || 1114;
 
-app.get("/", (req: Request, res: Response, next: NextFunction) => {
-  // res.send("SALAM")
-  res.render("wellcome"); // Ensure that this file exists in the views folder
+app.get("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    res.json({ message: "server start  successfully" });
+  } catch (error) {
+    next(error);
+  }
+});
+app.get("/send", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const html = await ejs.renderFile(
+      path.join(__dirname, "views", "emails", "wellcome.ejs"),
+      {
+        name: "Anus Raza"
+      }
+    );
+
+    const responseEmail: any = await sendEmail(
+      "https://temp-mail.org/",
+      "testing email setup",
+      html
+    );
+    // console.log("responseEmail", responseEmail);
+    if (responseEmail) {
+      res.json({ message: "Email sent successfully" });
+    }
+  } catch (error) {
+    // console.log('app.get("/send"error', error)
+    next(error);
+  }
 });
 
-// Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
   res.status(500).send(`${err.stack}`);
@@ -29,5 +56,3 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-
