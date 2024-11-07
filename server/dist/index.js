@@ -3,7 +3,6 @@ import "dotenv/config";
 import path from "path";
 import { fileURLToPath } from "url";
 import ejs from "ejs";
-import { sendEmail } from "./config/mail.js";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -22,17 +21,16 @@ app.get("/", async (req, res, next) => {
 });
 app.get("/send", async (req, res, next) => {
     try {
-        const html = await ejs.renderFile(path.join(__dirname, "views", "emails", "wellcome.ejs"), {
-            name: "Anus Raza"
+        const html = await ejs.renderFile(path.join(__dirname, "views", "emails", "wellcome.ejs"));
+        await emailQueue.add(emailQueueName, {
+            to: "m23629592@gmail.com",
+            subject: "Welcome to new Look",
+            html
         });
-        const responseEmail = await sendEmail("https://temp-mail.org/", "testing email setup", html);
-        // console.log("responseEmail", responseEmail);
-        if (responseEmail) {
-            res.json({ message: "Email sent successfully" });
-        }
+        res.json({ message: "sent email Queue successfully" });
     }
     catch (error) {
-        // console.log('app.get("/send"error', error)
+        console.log('app.get("/send"error', error);
         next(error);
     }
 });
@@ -40,6 +38,10 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send(`${err.stack}`);
 });
+//  Queues {
+import "./jobs/index.js";
+import { emailQueue, emailQueueName } from "./jobs/EmailsJob.js";
+//  Queues // }
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

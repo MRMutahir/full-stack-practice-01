@@ -1,17 +1,16 @@
 import nodemailer from "nodemailer";
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
-    port: 587,
+    port: 2525,
     secure: false,
     auth: {
         user: process.env.SMTP_LOGIN,
         pass: process.env.SMTP_PASSWORD
-    }
+    },
+    logger: true, // Enable logging
+    debug: true // Show debug output
 });
 export const sendEmail = async (to, subject, body) => {
-    // console.log('to', to)
-    // console.log('subject', subject)
-    // console.log('body', body)
     try {
         await transporter.sendMail({
             from: process.env.FROM_EMAIL,
@@ -21,6 +20,6 @@ export const sendEmail = async (to, subject, body) => {
         });
     }
     catch (error) {
-        // console.log('sendEmail error', error)
+        console.log("sendEmail error", error);
     }
 };

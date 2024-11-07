@@ -10,7 +10,7 @@ const defaultQueueOptions: DefaultJobOptions = {
     count: 20,
     age: 60 * 60
   },
-  attempts: 3, 
+  attempts: 3,
   backoff: {
     type: "exponential",
     delay: 1000
