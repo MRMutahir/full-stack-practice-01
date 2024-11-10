@@ -48,8 +48,17 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 //  Queues {
 import "./jobs/index.js";
 import { emailQueue, emailQueueName } from "./jobs/EmailsJob.js";
+import { mainRouter } from "./Routes/index.js";
 //  Queues // }
+
+app.use(mainRouter)
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+
+
+
+
+export { app }
