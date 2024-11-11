@@ -1,4 +1,6 @@
 import express from "express";
+import { mainRouter } from "./Routes/index.js";
+import { errorMiddleware } from "./middleware/ErrorMiddlewae.js";
 import "dotenv/config";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -41,10 +43,10 @@ app.use((err, req, res, next) => {
 //  Queues {
 import "./jobs/index.js";
 import { emailQueue, emailQueueName } from "./jobs/EmailsJob.js";
-import { mainRouter } from "./Routes/index.js";
 //  Queues // }
 app.use(mainRouter);
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+app.use(errorMiddleware);
 export { app };
