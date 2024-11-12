@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("../partials/head") %>
+  <body class="container">
+    <h1>Welcome to Our Platform</h1>
+    <p>Salam 😊😊</p>
+    <h1><%= name %></h1>
+    <p>
+      We are thrilled to have you on board. Before you can start using your
+      account, we just need to verify your email address.
+    </p>
+
+    <p>Please click the link below to verify your account:</p>
+    <p>
+      <a
+        href="<%= url %>"
+        style="
+          background-color: #4caf50;
+          color: white;
+          padding: 10px 20px;
+          text-decoration: none;
+          border-radius: 5px;
+        "
+      >
+        Verify My Account
+      </a>
+    </p>
+
+    <p>
+      If you have any questions or need support, feel free to reach out. We are
+      always here to help you.
+    </p>
+
+    <p>Best Regards,</p>
+    <p>The Team</p>
+
+    <%- include("../partials/footer") %>
+  </body>
+</html>

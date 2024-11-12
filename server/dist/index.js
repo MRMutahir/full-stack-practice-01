@@ -4,7 +4,6 @@ import { errorMiddleware } from "./middleware/ErrorMiddlewae.js";
 import "dotenv/config";
 import path from "path";
 import { fileURLToPath } from "url";
-import ejs from "ejs";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -23,16 +22,18 @@ app.get("/", async (req, res, next) => {
 });
 app.get("/send", async (req, res, next) => {
     try {
-        const html = await ejs.renderFile(path.join(__dirname, "views", "emails", "wellcome.ejs"));
-        await emailQueue.add(emailQueueName, {
-            to: "m23629592@gmail.com",
-            subject: "Welcome to new Look",
-            html
-        });
-        res.json({ message: "sent email Queue successfully" });
+        // const html = await ejs.renderFile(
+        //   path.join(__dirname, "views", "emails", "wellcome.ejs")
+        // );
+        // await emailQueue.add(emailQueueName, {
+        //   to: "m23629592@gmail.com",
+        //   subject: "Welcome to new Look",
+        //   html
+        // });
+        // res.json({ message: "sent email Queue successfully" });
     }
     catch (error) {
-        console.log('app.get("/send"error', error);
+        // console.log('app.get("/send"error', error);
         next(error);
     }
 });
@@ -42,7 +43,6 @@ app.use((err, req, res, next) => {
 });
 //  Queues {
 import "./jobs/index.js";
-import { emailQueue, emailQueueName } from "./jobs/EmailsJob.js";
 //  Queues // }
 app.use(mainRouter);
 app.listen(PORT, () => {

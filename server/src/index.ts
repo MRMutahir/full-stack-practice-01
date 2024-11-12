@@ -25,19 +25,20 @@ app.get("/", async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 });
+
 app.get("/send", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const html = await ejs.renderFile(
-      path.join(__dirname, "views", "emails", "wellcome.ejs")
-    );
-    await emailQueue.add(emailQueueName, {
-      to: "m23629592@gmail.com",
-      subject: "Welcome to new Look",
-      html
-    });
-    res.json({ message: "sent email Queue successfully" });
+    // const html = await ejs.renderFile(
+    //   path.join(__dirname, "views", "emails", "wellcome.ejs")
+    // );
+    // await emailQueue.add(emailQueueName, {
+    //   to: "m23629592@gmail.com",
+    //   subject: "Welcome to new Look",
+    //   html
+    // });
+    // res.json({ message: "sent email Queue successfully" });
   } catch (error) {
-    console.log('app.get("/send"error', error);
+    // console.log('app.get("/send"error', error);
     next(error);
   }
 });

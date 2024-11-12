@@ -1,3 +1,6 @@
+import ejs from "ejs";
+import path from "path";
+import { fileURLToPath } from "url";
 const formateError = (error) => {
     const errors = {};
     error.errors?.forEach((issue) => {
@@ -5,4 +8,9 @@ const formateError = (error) => {
     });
     return errors;
 };
-export { formateError };
+const emailRenderEjs = async (fileName, payload) => {
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const html = await ejs.renderFile(__dirname + `/views/emails/${fileName}.ejs`, payload);
+    return html;
+};
+export { formateError, emailRenderEjs };
