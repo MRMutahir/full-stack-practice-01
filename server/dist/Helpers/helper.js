@@ -14,4 +14,11 @@ const emailRenderEjs = async (fileName, payload) => {
     const html = await ejs.renderFile(validPath + `/views/emails/${fileName}.ejs`, payload);
     return html;
 };
-export { formateError, emailRenderEjs };
+const sendResponse = async (res, statuscode = 200, success = true, message = "", data = null) => {
+    return res.status(statuscode).json({
+        success,
+        message,
+        data
+    });
+};
+export { formateError, emailRenderEjs, sendResponse };

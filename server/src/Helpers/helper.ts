@@ -1,7 +1,9 @@
+import { Response } from "express";
 import { ZodError } from "zod";
 import ejs from "ejs";
 import path from "path";
 import { fileURLToPath } from "url";
+
 const formateError = (error: ZodError) => {
   const errors: any = {};
   error.errors?.forEach((issue) => {
@@ -25,4 +27,18 @@ const emailRenderEjs = async (
   return html;
 };
 
-export { formateError, emailRenderEjs };
+const sendResponse = async (
+  res: Response,
+  statuscode: number = 200,
+  success: Boolean = true,
+  message: string = "",
+  data: any = null
+): Promise<Response> => {
+ return res.status(statuscode).json({
+    success,
+    message,
+    data
+  });
+};
+
+export { formateError, emailRenderEjs, sendResponse };
