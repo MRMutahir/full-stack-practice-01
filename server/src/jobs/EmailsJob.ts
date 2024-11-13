@@ -30,7 +30,7 @@ const queueWorker = new Worker(
 );
 
 queueWorker.on("failed", (job, err) => {
-  console.error(`Job ${job.id} failed with error: ${err.message}`);
+  console.error(`Job failed with error: ${err.message}`);
 });
 
 export { emailQueueName, emailQueue, queueWorker };

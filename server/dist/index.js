@@ -1,9 +1,10 @@
+import "dotenv/config";
 import express from "express";
 import { mainRouter } from "./Routes/index.js";
 import { errorMiddleware } from "./middleware/ErrorMiddlewae.js";
-import "dotenv/config";
 import path from "path";
 import { fileURLToPath } from "url";
+import "./jobs/index.js";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -41,9 +42,6 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send(`${err.stack}`);
 });
-//  Queues {
-import "./jobs/index.js";
-//  Queues // }
 app.use(mainRouter);
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

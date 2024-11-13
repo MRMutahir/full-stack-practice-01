@@ -1,4 +1,3 @@
-// Helpers/helper.js
 import { ZodError } from "zod";
 import ejs from "ejs";
 import path from "path";
@@ -11,12 +10,18 @@ const formateError = (error: ZodError) => {
   return errors;
 };
 
-const emailRenderEjs = async (fileName: string, payload: any) :Promise<string> => {
-    const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  const html:string= await ejs.renderFile(
-    __dirname + `/views/emails/${fileName}.ejs`,
+const emailRenderEjs = async (
+  fileName: string,
+  payload: any
+): Promise<string> => {
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
+  const validPath = path.resolve(__dirname, "..");
+
+  const html: string = await ejs.renderFile(
+    validPath + `/views/emails/${fileName}.ejs`,
     payload
   );
+
   return html;
 };
 

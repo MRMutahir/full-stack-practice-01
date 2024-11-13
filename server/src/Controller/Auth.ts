@@ -1,9 +1,10 @@
-// Controller/Auth.js
 import { Request, Response, NextFunction } from "express";
 import { hashPassword } from "../Helpers/PasswordHelper.js";
 import { registerValidator } from "../Validator/RegisterValidator.js";
 import { prisma } from "../config/database.js";
 import { emailRenderEjs } from "../Helpers/helper.js";
+import { uuid } from "uuidv4";
+import { emailQueue, emailQueueName } from "../jobs/EmailsJob.js";
 
 const register = async (
   req: Request,
@@ -14,8 +15,18 @@ const register = async (
     const body = req.body;
 
     const validateBody = registerValidator.parse(body);
-
     const { name, email, password } = validateBody;
+
+    let user = await prisma.user.findUnique({
+      where: { email }
+    });
+    if (user) {
+      res.status(409).json({
+        success: false,
+        message: "User already exists with this email."
+      });
+    }
+
     const passwordHash = await hashPassword(password);
 
     const payload = {
@@ -23,22 +34,29 @@ const register = async (
       email,
       password: passwordHash
     };
-    const url = "";
 
-    await emailRenderEjs("account-verify", { name: payload.name, url });
+    const url = `${
+      process.env.Account_Verify_Url_Frontend
+    }/verify-account?email=${payload.email}&token=${uuid()}`;
 
-    // let user = await prisma.user.findUnique({
-    //   where: {
-    //     email: payload.email
-    //   }
-    // });
+    const html = await emailRenderEjs("account-verify", {
+      name: payload.name,
+      url
+    });
 
-    // if (user) {
-    //   res.status(400).json({ message: "This email is already in use" });
-    // }
+    await emailQueue.add(emailQueueName, {
+      to: payload.email,
+      subject: "Please verify your email Clash",
+      html
+    });
 
-    // await prisma.user.create({ data: payload });
-    res.status(201).json({ message: "User created successfully" });
+    await prisma.user.create({ data: payload });
+
+    // Send success response
+    res.status(201).json({
+      success: true,
+      message: "User created successfully. Please verify your email."
+    });
   } catch (error) {
     next(error);
   }

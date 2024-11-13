@@ -10,7 +10,8 @@ const formateError = (error) => {
 };
 const emailRenderEjs = async (fileName, payload) => {
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
-    const html = await ejs.renderFile(__dirname + `/views/emails/${fileName}.ejs`, payload);
+    const validPath = path.resolve(__dirname, "..");
+    const html = await ejs.renderFile(validPath + `/views/emails/${fileName}.ejs`, payload);
     return html;
 };
 export { formateError, emailRenderEjs };

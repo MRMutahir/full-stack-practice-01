@@ -1,11 +1,12 @@
+import "dotenv/config";
 import express, { Application, Request, Response, NextFunction } from "express";
 import { mainRouter } from "./Routes/index.js";
 import { errorMiddleware } from "./middleware/ErrorMiddlewae.js";
-import "dotenv/config";
 import path from "path";
 import { fileURLToPath } from "url";
 import ejs from "ejs";
-
+import "./jobs/index.js";
+import { emailQueue, emailQueueName } from "./jobs/EmailsJob.js";
 const app: Application = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -47,12 +48,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
   res.status(500).send(`${err.stack}`);
 });
-
-//  Queues {
-import "./jobs/index.js";
-import { emailQueue, emailQueueName } from "./jobs/EmailsJob.js";
-
-//  Queues // }
 
 app.use(mainRouter);
 
