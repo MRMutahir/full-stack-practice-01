@@ -1,11 +1,10 @@
 import { Router } from "express";
-import { register } from "../controller/Auth.js";
+import { register, verifyAccount } from "../controller/Auth.js";
 
+const AuthRoutes = Router();
 
+AuthRoutes.post("/register", register);
 
-const AuthRoutes = Router()
+AuthRoutes.post(`/verify-account`, verifyAccount);
 
-AuthRoutes.post("/register", register)
-
-
-export { AuthRoutes }
+export { AuthRoutes };
