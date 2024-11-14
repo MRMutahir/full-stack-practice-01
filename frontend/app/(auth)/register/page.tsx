@@ -1,3 +1,4 @@
+import { registerAction } from "@/app/actions/AuthActions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,7 +13,7 @@ const register = () => {
         </h1>
         <h1 className="text-3xl font-bold">Register</h1>
         <p>Welcome</p>
-        <form>
+        <form action={registerAction}>
           <div className="mt-4">
             <Label htmlFor="name">Name</Label>
             <Input

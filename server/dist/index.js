@@ -42,7 +42,7 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send(`${err.stack}`);
 });
-app.use(mainRouter);
+app.use("/v1/api", mainRouter);
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
