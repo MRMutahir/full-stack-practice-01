@@ -1,19 +1,25 @@
 "use client";
-
+import { useActionState, useEffect } from "react";
 import { RegisterAction } from "@/app/actions/AuthActions";
 import SubmitBtn from "@/components/common/SubmitBtn";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import {  useActionState} from "react";
+import { toast } from "sonner";
 
 const RegisterForm = () => {
-
   const [state, formAction] = useActionState(RegisterAction, {
     status: 0,
     message: "",
     errors: {}
   });
+
+  useEffect(() => {
+    if (state?.status >= 400) {
+      toast.error(state?.message)
+    }
+  }, [state])
+
   return (
     <form action={formAction}>
       <div className="mt-4">
@@ -35,7 +41,6 @@ const RegisterForm = () => {
           placeholder="Enter your email"
         />
         <span className="text-red-500">{state?.errors.email}</span>
-
       </div>
       <div className="mt-4">
         <Label htmlFor="password">Password</Label>
@@ -46,7 +51,6 @@ const RegisterForm = () => {
           placeholder="Enter your password"
         />
         <span className="text-red-500">{state?.errors.password}</span>
-
         <div className="text-right font-bold">
           <Link href="forget-password">Forget Password</Link>
         </div>
