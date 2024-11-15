@@ -17,6 +17,8 @@ const RegisterForm = () => {
   useEffect(() => {
     if (state?.status >= 400) {
       toast.error(state?.message)
+    }else {
+      toast.success(state?.message)
     }
   }, [state])
 
