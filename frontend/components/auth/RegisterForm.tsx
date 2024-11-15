@@ -1,12 +1,21 @@
 "use client";
-import { registerAction } from "@/app/actions/AuthActions";
+
+import { RegisterAction } from "@/app/actions/AuthActions";
 import SubmitBtn from "@/components/common/SubmitBtn";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import {  useActionState} from "react";
+
 const RegisterForm = () => {
+
+  const [state, formAction] = useActionState(RegisterAction, {
+    status: 0,
+    message: "",
+    errors: {}
+  });
   return (
-    <form action={registerAction}>
+    <form action={formAction}>
       <div className="mt-4">
         <Label htmlFor="name">Name</Label>
         <Input
@@ -15,6 +24,7 @@ const RegisterForm = () => {
           name="name"
           placeholder="Enter your name"
         />
+        <span className="text-red-500">{state?.errors.name}</span>
       </div>
       <div className="mt-4">
         <Label htmlFor="email">Email</Label>
@@ -24,6 +34,8 @@ const RegisterForm = () => {
           name="email"
           placeholder="Enter your email"
         />
+        <span className="text-red-500">{state?.errors.email}</span>
+
       </div>
       <div className="mt-4">
         <Label htmlFor="password">Password</Label>
@@ -33,6 +45,8 @@ const RegisterForm = () => {
           name="password"
           placeholder="Enter your password"
         />
+        <span className="text-red-500">{state?.errors.password}</span>
+
         <div className="text-right font-bold">
           <Link href="forget-password">Forget Password</Link>
         </div>
@@ -45,14 +59,9 @@ const RegisterForm = () => {
           name="confirm_password"
           placeholder="Enter your confirm password"
         />
-        {/* <div className="text-right font-bold">
-    <Link href="forget-password">Forget Password</Link>
-  </div> */}
+        <span className="text-red-500">{state?.errors.confirm_password}</span>
       </div>
       <div className="mt-4">
-        {/* <Button className="w-full" variant="secondary">
-    Submit
-  </Button> */}
         <SubmitBtn />
       </div>
     </form>

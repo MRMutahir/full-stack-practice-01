@@ -1,3 +1,5 @@
+import { Env } from "./env"
+
 const BASE_URL = `${Env.BACKEND_URL}/v1/api`
 
 
