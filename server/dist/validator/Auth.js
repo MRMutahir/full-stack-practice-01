@@ -21,4 +21,8 @@ const verifyAccountSchema = z.object({
     email: z.string({ message: "Email is required." }),
     token: z.string({ message: "Token is required." })
 });
-export { registerValidator, verifyAccountSchema };
+const LoginAccountSchema = z.object({
+    email: z.string({ message: "Email is required." }).email({ message: "correct email format" }),
+    password: z.string({ message: "Password is required." })
+});
+export { registerValidator, verifyAccountSchema, LoginAccountSchema };
