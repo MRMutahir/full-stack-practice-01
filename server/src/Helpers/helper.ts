@@ -5,6 +5,7 @@ import path from "path";
 import { genSaltSync, hashSync } from "bcrypt-ts";
 import { fileURLToPath } from "url";
 import jwt, { SignOptions, JwtPayload } from "jsonwebtoken";
+import bcrypt from 'bcrypt';
 
 const formateError = (error: ZodError) => {
   const errors: any = {};
@@ -52,11 +53,7 @@ const hashPassword = async (password: string): Promise<string> => {
 const generateVerifyAccountToken = async (
   email: string
 ): Promise<string> => {
-  const secret = process.env.JWT_SECRET;
-
-  if (!secret) {
-    throw new Error("JWT_SECRET is not defined in the environment variables");
-  }
+  const secret = process.env.JWT_SECRET!;
 
   const token = jwt.sign(email, secret);
 
@@ -67,16 +64,30 @@ const generateVerifyAccountToken = async (
 const VerifyAccountToken = async (
   token: string
 ): Promise<JwtPayload | string> => {
-  const secret = process.env.JWT_SECRET;
+  const secret = process.env.JWT_SECRET as string;
 
-  if (!secret) {
-    throw new Error("JWT_SECRET is not defined in the environment variables");
-  }
 
   const verifyToken = jwt.verify(token, secret);
-  
+
   return verifyToken;
 };
+
+
+const verifyPassword = async (loginPassword: string, hashedPassword: string): Promise<boolean> => {
+  const isMatch = await bcrypt.compare(loginPassword, hashedPassword);
+  return isMatch;
+};
+
+
+const generateJwtToken = async (email: string): Promise<JwtPayload | string> => {
+  const secret = process.env.JWT_SECRET as string;
+  const expiresIn = "1h";
+  const payload = { email };
+
+  const token = jwt.sign(payload, secret, { expiresIn });
+  return token;
+};
+
 
 export {
   formateError,
@@ -84,5 +95,7 @@ export {
   sendResponse,
   hashPassword,
   generateVerifyAccountToken,
-  VerifyAccountToken
+  VerifyAccountToken,
+  verifyPassword,
+  generateJwtToken
 };

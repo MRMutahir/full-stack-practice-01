@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { registerValidator, verifyAccountSchema } from "../Validator/Auth.js";
+import { LoginAccountSchema, registerValidator, verifyAccountSchema } from "../Validator/Auth.js";
 import { prisma } from "../config/database.js";
-import { emailRenderEjs, generateVerifyAccountToken, hashPassword, sendResponse, VerifyAccountToken } from "../Helpers/helper.js";
+import { emailRenderEjs, generateJwtToken, generateVerifyAccountToken, hashPassword, sendResponse, VerifyAccountToken, verifyPassword } from "../Helpers/helper.js";
 import { emailQueue, emailQueueName } from "../jobs/EmailsJob.js";
+import { string } from "zod";
 
 const register = async (
   req: Request,
@@ -101,12 +102,47 @@ const verifyAccount = async (req: Request, res: Response, next: NextFunction): P
       },
     });
 
-    return sendResponse(res, 400, true, "Account verified successfully", verifyToken)
+    return sendResponse(res, 200, true, "Account verified successfully", verifyToken)
 
   } catch (error) {
     next(error);
   }
 };
 
+const login = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+  try {
+    const body = req.body;
 
-export { register, verifyAccount };
+    const validatedData = LoginAccountSchema.parse(body);
+    const { email, password } = validatedData
+
+    // const user = await prisma.user.findUnique({
+    //   where: { email }
+    // })
+
+    const user = await prisma.user.findFirst({
+      where: {
+        email,
+        // isVerified: true,
+        isVerified: false,
+      },
+    });
+
+    if (!user) {
+      return sendResponse(res, 404, false, "User not found");
+    }
+
+    const pass = await verifyPassword(password, user.password);
+    if (!pass) {
+      return sendResponse(res, 401, false, "Invalid password");
+    }
+
+    const token = await generateJwtToken(email)
+
+    return sendResponse(res, 200, true, "Login successful", { token: `Bearer ${token}` });
+  } catch (error) {
+    next(error)
+  }
+
+}
+export { register, verifyAccount, login };
