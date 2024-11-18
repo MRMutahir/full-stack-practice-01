@@ -3,6 +3,7 @@ import path from "path";
 import { genSaltSync, hashSync } from "bcrypt-ts";
 import { fileURLToPath } from "url";
 import jwt from "jsonwebtoken";
+import bcrypt from 'bcrypt';
 const formateError = (error) => {
     const errors = {};
     error.errors?.forEach((issue) => {
@@ -30,18 +31,23 @@ const hashPassword = async (password) => {
 };
 const generateVerifyAccountToken = async (email) => {
     const secret = process.env.JWT_SECRET;
-    if (!secret) {
-        throw new Error("JWT_SECRET is not defined in the environment variables");
-    }
     const token = jwt.sign(email, secret);
     return token;
 };
 const VerifyAccountToken = async (token) => {
     const secret = process.env.JWT_SECRET;
-    if (!secret) {
-        throw new Error("JWT_SECRET is not defined in the environment variables");
-    }
     const verifyToken = jwt.verify(token, secret);
     return verifyToken;
 };
-export { formateError, emailRenderEjs, sendResponse, hashPassword, generateVerifyAccountToken, VerifyAccountToken };
+const verifyPassword = async (loginPassword, hashedPassword) => {
+    const isMatch = await bcrypt.compare(loginPassword, hashedPassword);
+    return isMatch;
+};
+const generateJwtToken = async (email) => {
+    const secret = process.env.JWT_SECRET;
+    const expiresIn = "1h";
+    const payload = { email };
+    const token = jwt.sign(payload, secret, { expiresIn });
+    return token;
+};
+export { formateError, emailRenderEjs, sendResponse, hashPassword, generateVerifyAccountToken, VerifyAccountToken, verifyPassword, generateJwtToken };
