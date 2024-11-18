@@ -15,7 +15,6 @@ mainRouter.post("/send-email", async (req, res, next) => {
 });
 mainRouter.get("/protected-route", authMiddleware, (req, res) => {
   const user = req.user
-  // console.log('user', user)
-  res.json({ message: "You have access to this protected route!", data: user || "SALAM" });
+  res.json({ message: "You have access to this protected route!", data: user });
 });
 export { mainRouter };
