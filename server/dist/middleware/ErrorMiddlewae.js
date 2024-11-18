@@ -3,7 +3,7 @@ import { formateError } from "../Helpers/helper.js";
 const errorMiddleware = async (error, req, res, next) => {
     if (error instanceof ZodError) {
         const errors = formateError(error);
-        res.status(400).json({
+        res.status(422).json({
             success: false,
             errors
         });

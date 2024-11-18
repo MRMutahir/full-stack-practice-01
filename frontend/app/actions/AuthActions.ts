@@ -11,17 +11,16 @@ const RegisterAction = async (prevState: any, formData: FormData) => {
             password: formData.get("password"),
             confirm_password: formData.get("confirm_password")
         });
-        
-        if (data.status === 200) {
+
+        if (data) {
             return {
                 status: data.status || 200,
-                message: data.message || "registration successfully",
+                message: data.message || 'User created successfully. Please verify your email.',
                 errors: {}
             };
         }
     } catch (error) {
         if (error instanceof AxiosError) {
-
             if (error.response?.status === 422) {
                 return {
                     status: 422,
@@ -35,7 +34,6 @@ const RegisterAction = async (prevState: any, formData: FormData) => {
                 errors: error.response?.data?.errors || {},
             };
         } else {
-            // Handle unexpected errors
             return {
                 status: 500,
                 message: "Unexpected error occurred",
