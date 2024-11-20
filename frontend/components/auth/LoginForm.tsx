@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import SubmitBtn from "../common/SubmitBtn";
 import Link from "next/link";
 import { toast } from "sonner";
+import { signIn } from "next-auth/react";
 
 const LoginForm = () => {
   const [state, formAction] = useActionState(LoginAction, {
@@ -21,6 +22,7 @@ const LoginForm = () => {
       toast.error(state?.message || "some thing went wrong");
     } else {
       toast.success(state?.message);
+      // signIn.("credentials")
     }
   }, [state]);
   return (

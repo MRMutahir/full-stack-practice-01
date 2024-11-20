@@ -42,7 +42,9 @@ export const authOptions: AuthOptions = {
   },
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: "Welcome Back",
+      type: "credentials",
+
       credentials: {
         username: {},
         password: {},
