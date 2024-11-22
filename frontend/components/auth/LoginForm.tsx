@@ -22,7 +22,10 @@ const LoginForm = () => {
       toast.error(state?.message || "some thing went wrong");
     } else {
       toast.success(state?.message);
-      // signIn.("credentials")
+      // signIn("credentials",{
+      //   email:state.email,
+      //   password:state.password
+      // })
     }
   }, [state]);
   return (

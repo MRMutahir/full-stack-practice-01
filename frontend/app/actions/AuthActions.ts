@@ -51,12 +51,18 @@ const LoginAction = async (prevState: any, formData: FormData) => {
       email: formData.get("email"),
       password: formData.get("password"),
     });
-    
+
     if (data) {
+      console.log('data', data)
       return {
         status: data.status || 200,
         message: data.message || "Login successfully.",
         errors: {},
+        data: {
+          email: formData.get("email"),
+          password: formData.get("password"),
+          token: data?.token
+        }
       };
     }
   } catch (error) {
