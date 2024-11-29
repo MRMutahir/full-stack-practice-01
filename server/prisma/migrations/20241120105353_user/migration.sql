@@ -9,6 +9,7 @@ CREATE TABLE "User" (
     "email_verified_at" TIMESTAMP(3),
     "email_verify_token" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "isVerified" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

@@ -1,5 +1,6 @@
 import { z } from "zod";
-const registerValidator = z.object({
+const registerValidator = z
+    .object({
     name: z
         .string({ message: "Name is required." })
         .min(3, { message: "Name must be at least 3 characters long." }),
@@ -11,18 +12,20 @@ const registerValidator = z.object({
         .min(6, { message: "Password must be at least 6 characters long." }),
     confirm_password: z
         .string({ message: "Confirm Password is required." })
-        .min(6, { message: "Confirm Password must be at least 6 characters long." }),
+        .min(6, {
+        message: "Confirm Password must be at least 6 characters long.",
+    }),
 })
     .refine((data) => data.password === data.confirm_password, {
     message: "Passwords do not match.",
-    path: ["confirm_password"]
+    path: ["confirm_password"],
 });
 const verifyAccountSchema = z.object({
     email: z.string({ message: "Email is required." }),
-    token: z.string({ message: "Token is required." })
+    token: z.string({ message: "Token is required." }),
 });
 const LoginAccountSchema = z.object({
     email: z.string({ message: "Email is required." }).email({ message: "correct email format" }),
-    password: z.string({ message: "Password is required." })
+    password: z.string({ message: "Password is required." }),
 });
 export { registerValidator, verifyAccountSchema, LoginAccountSchema };

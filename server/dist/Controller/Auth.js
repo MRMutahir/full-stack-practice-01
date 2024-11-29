@@ -1,6 +1,6 @@
-import { LoginAccountSchema, registerValidator, verifyAccountSchema } from "../Validator/Auth.js";
+import { LoginAccountSchema, registerValidator, verifyAccountSchema, } from "../Validator/Auth.js";
 import { prisma } from "../config/database.js";
-import { emailRenderEjs, generateJwtToken, generateVerifyAccountToken, hashPassword, sendResponse, VerifyAccountToken, verifyPassword } from "../Helpers/helper.js";
+import { emailRenderEjs, generateJwtToken, generateVerifyAccountToken, hashPassword, sendResponse, VerifyAccountToken, verifyPassword, } from "../Helpers/helper.js";
 import { emailQueue, emailQueueName } from "../jobs/EmailsJob.js";
 const register = async (req, res, next) => {
     try {
@@ -8,7 +8,7 @@ const register = async (req, res, next) => {
         const validateBody = registerValidator.parse(body);
         const { name, email, password } = validateBody;
         let user = await prisma.user.findUnique({
-            where: { email }
+            where: { email },
         });
         if (user) {
             return sendResponse(res, 409, false, "User already exists with this email.");
@@ -20,19 +20,19 @@ const register = async (req, res, next) => {
             email,
             password: passwordHash,
             email_verify_token: token,
-            token_send_at: new Date().toISOString()
+            token_send_at: new Date().toISOString(),
         };
         const url = `${process.env.Account_Verify_Url_Frontend}/verify-account?email=${encodeURIComponent(payload.email)}&token=${encodeURIComponent(token)}`;
         const html = await emailRenderEjs("account-verify", {
             name: payload.name,
-            url
+            url,
         });
         const newUser = await prisma.user.create({ data: payload });
         if (newUser) {
             await emailQueue.add(emailQueueName, {
                 to: payload.email,
                 subject: "Please verify your email",
-                html
+                html,
             });
             return sendResponse(res, 200, true, "User created successfully. Please verify your email.");
         }
@@ -79,11 +79,9 @@ const login = async (req, res, next) => {
         // const user = await prisma.user.findUnique({
         //   where: { email }
         // })
-        const user = await prisma.user.findFirst({
+        const user = await prisma.user.findUnique({
             where: {
                 email,
-                // isVerified: true,
-                isVerified: false,
             },
         });
         if (!user) {
@@ -94,10 +92,39 @@ const login = async (req, res, next) => {
             return sendResponse(res, 401, false, "Invalid password");
         }
         const token = await generateJwtToken(email);
-        return sendResponse(res, 200, true, "Login successful", { token: `Bearer ${token}` });
+        return sendResponse(res, 200, true, "Login successful", {
+            token: `Bearer ${token}`,
+        });
     }
     catch (error) {
         next(error);
     }
 };
-export { register, verifyAccount, login };
+const checkLogin = async (req, res, next) => {
+    try {
+        const body = req.body;
+        const validatedData = LoginAccountSchema.parse(body);
+        const { email, password } = validatedData;
+        // const user = await prisma.user.findUnique({
+        //   where: { email }
+        // })
+        const user = await prisma.user.findUnique({
+            where: {
+                email,
+            },
+        });
+        if (!user) {
+            return sendResponse(res, 404, false, "User not found");
+        }
+        const pass = await verifyPassword(password, user.password);
+        if (!pass) {
+            return sendResponse(res, 401, false, "Invalid password");
+        }
+        // const token = await generateJwtToken(email);
+        return sendResponse(res, 200, true, "Login successful");
+    }
+    catch (error) {
+        next(error);
+    }
+};
+export { register, verifyAccount, login, checkLogin };

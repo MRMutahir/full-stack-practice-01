@@ -8,23 +8,20 @@ import Link from "next/link";
 import { toast } from "sonner";
 
 const RegisterForm = () => {
-  console.log('SALAM useEffect');
-
   const [state, formAction] = useActionState(RegisterAction, {
     status: 0,
     message: "",
-    errors: {}
+    errors: {},
   });
-  console.log('state', state)
 
   useEffect(() => {
-    console.log('useEffect state', state)
+    console.log('state', state)
     if (state?.status >= 400) {
-      toast.error(state?.message|| "some thing went wrong")
-    }else {
-      toast.success(state?.message)
+      toast.error(state?.message || "some thing went wrong");
+    } else {
+      toast.success(state?.message);
     }
-  }, [state])
+  }, [state]);
 
   return (
     <form action={formAction}>
