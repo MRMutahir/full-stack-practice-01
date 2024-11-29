@@ -1,6 +1,6 @@
 "use server";
 
-import { LOGIN_URL, REGISTER_URL } from "@/lib/APIsEndPoints";
+import { CHECK_LOGIN, LOGIN_URL, REGISTER_URL } from "@/lib/APIsEndPoints";
 import axios, { AxiosError } from "axios";
 
 const RegisterAction = async (prevState: any, formData: FormData) => {
@@ -47,22 +47,21 @@ const RegisterAction = async (prevState: any, formData: FormData) => {
 
 const LoginAction = async (prevState: any, formData: FormData) => {
   try {
-    const { data } = await axios.post(LOGIN_URL, {
+    const { data } = await axios.post(CHECK_LOGIN, {
       email: formData.get("email"),
       password: formData.get("password"),
     });
 
     if (data) {
-      console.log('data', data)
+      // console.log('data', data)
       return {
-        status: data.status || 200,
-        message: data.message || "Login successfully.",
+        status: 200,
+        message: data?.message || "Login successful.",
         errors: {},
         data: {
           email: formData.get("email"),
           password: formData.get("password"),
-          token: data?.token
-        }
+        },
       };
     }
   } catch (error) {
@@ -83,4 +82,7 @@ const LoginAction = async (prevState: any, formData: FormData) => {
     }
   }
 };
+
+
+
 export { RegisterAction, LoginAction };

@@ -17,17 +17,21 @@ const LoginForm = () => {
   });
 
   useEffect(() => {
-    console.log("state", state);
-    if (state?.status >= 400) {
-      toast.error(state?.message || "some thing went wrong");
+    if (state && state.status) {  
+      const { email, password } = state?.data || {};  
+      if (state.status === 200 && email && password) {
+        signIn("credentials", { email, password, redirect: true, callbackUrl: "/dashboard" });
+        toast.success(state.message);
+      } else if (state.status >= 400) {
+        toast.error(state.message || "Something went wrong");
+      }
     } else {
-      toast.success(state?.message);
-      // signIn("credentials",{
-      //   email:state.email,
-      //   password:state.password
-      // })
+      toast.success("Welcome to the sign-in page 😊");
     }
   }, [state]);
+
+
+
   return (
     <form action={formAction}>
       <div className="mt-4">

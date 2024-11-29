@@ -170,4 +170,44 @@ const login = async (
     next(error);
   }
 };
-export { register, verifyAccount, login };
+
+
+
+const checkLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
+  try {
+    const body = req.body;
+
+    const validatedData = LoginAccountSchema.parse(body);
+    const { email, password } = validatedData;
+
+    // const user = await prisma.user.findUnique({
+    //   where: { email }
+    // })
+
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) {
+      return sendResponse(res, 404, false, "User not found");
+    }
+
+    const pass = await verifyPassword(password, user.password);
+    if (!pass) {
+      return sendResponse(res, 401, false, "Invalid password");
+    }
+
+    // const token = await generateJwtToken(email);
+
+    return sendResponse(res, 200, true, "Login successful");
+  } catch (error) {
+    next(error);
+  }
+};
+export { register, verifyAccount, login , checkLogin};
