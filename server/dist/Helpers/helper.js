@@ -45,9 +45,12 @@ const verifyPassword = async (loginPassword, hashedPassword) => {
 };
 const generateJwtToken = async (email) => {
     const secret = process.env.JWT_SECRET;
-    const expiresIn = "1h";
+    const expiresIn = "1d";
     const payload = { email };
     const token = jwt.sign(payload, secret, { expiresIn });
     return token;
 };
-export { formateError, emailRenderEjs, sendResponse, hashPassword, generateVerifyAccountToken, VerifyAccountToken, verifyPassword, generateJwtToken };
+const checkReqFile = async (file) => {
+    console.log('file', file);
+};
+export { formateError, emailRenderEjs, sendResponse, hashPassword, generateVerifyAccountToken, VerifyAccountToken, verifyPassword, generateJwtToken, checkReqFile };

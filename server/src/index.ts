@@ -4,16 +4,20 @@ import { mainRouter } from "./Routes/index.js";
 import { errorMiddleware } from "./middleware/ErrorMiddlewae.js";
 import path from "path";
 import { fileURLToPath } from "url";
-import ejs from "ejs";
 import "./jobs/index.js";
-import { emailQueue, emailQueueName } from "./jobs/EmailsJob.js";
+import bodyParser from "body-parser";
+
 const app: Application = express();
+
+app.use(bodyParser.json());  
+app.use(bodyParser.urlencoded({ extended: true })); 
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true}));
 
 const url = import.meta.url;
-
 const __dirname = path.dirname(fileURLToPath(url));
+
 app.set("view engine", "ejs");
 app.set("views", path.resolve(__dirname, "./views"));
 
