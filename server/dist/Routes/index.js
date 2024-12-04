@@ -3,9 +3,9 @@ import { Router } from "express";
 import { AuthRoutes } from "./Auth.js";
 import { sendEmail } from "../config/mail.js";
 import { authMiddleware } from "../middleware/AuthMiddleware.js";
-// import { HealthRoutes } from "./Health.js";
+import { authLimiter } from "../middleware/rateLimit.js";
 const mainRouter = Router();
-mainRouter.use("/auth", AuthRoutes);
+mainRouter.use("/auth", authLimiter, AuthRoutes);
 mainRouter.post("/send-email", async (req, res, next) => {
     const { to, subject, body } = req.body;
     await sendEmail(to, subject, body);

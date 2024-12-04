@@ -5,6 +5,7 @@ import { errorMiddleware } from "./middleware/ErrorMiddlewae.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import "./jobs/index.js";
+import { generalLimiter } from "./middleware/rateLimit.js";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -42,6 +43,7 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send(`${err.stack}`);
 });
+app.use(generalLimiter);
 app.use("/v1/api", mainRouter);
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

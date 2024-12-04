@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import ejs from "ejs";
 import "./jobs/index.js";
 import { emailQueue, emailQueueName } from "./jobs/EmailsJob.js";
+import { generalLimiter } from "./middleware/rateLimit.js";
 const app: Application = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -48,7 +49,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
   res.status(500).send(`${err.stack}`);
 });
-
+app.use(generalLimiter)
 app.use("/v1/api", mainRouter);
 
 app.listen(PORT, () => {
