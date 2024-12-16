@@ -1,0 +1,18 @@
+-- CreateTable
+CREATE TABLE "POST_DATA" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "title" VARCHAR(255) NOT NULL,
+    "description" TEXT,
+    "image" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "expire_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "POST_DATA_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "POST_DATA_userId_key" ON "POST_DATA"("userId");
+
+-- AddForeignKey
+ALTER TABLE "POST_DATA" ADD CONSTRAINT "POST_DATA_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
