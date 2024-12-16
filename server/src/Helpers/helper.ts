@@ -79,19 +79,17 @@ const verifyPassword = async (loginPassword: string, hashedPassword: string): Pr
 };
 
 
-const generateJwtToken = async (email: string): Promise<JwtPayload | string> => {
-  const secret = process.env.JWT_SECRET as string;
+const generateJwtToken = async (user: { email: string; id: number }): Promise<string> => {
+
+  const secret = process.env.JWT_SECRET! as string;
+
   const expiresIn = "1d";
-  const payload = { email };
 
-  const token = jwt.sign(payload, secret, { expiresIn });
-  return token;
+  const payload: JwtPayload = { email: user.email, id: user.id };
+
+  return jwt.sign(payload, secret, { expiresIn });
 };
 
-
-const checkReqFile = async (file): Promise<void> => {
-  console.log('file', file)
-};
 
 
 export {
@@ -102,6 +100,5 @@ export {
   generateVerifyAccountToken,
   VerifyAccountToken,
   verifyPassword,
-  generateJwtToken,
-  checkReqFile
+  generateJwtToken
 };

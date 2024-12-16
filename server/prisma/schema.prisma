@@ -33,15 +33,16 @@ model User {
   created_at DateTime @default(now())
 
   isVerified Boolean    @default(false)
-  POST_DATA  POST_DATA?
+  
+  POST_DATA  POST_DATA[]
 }
 
 model POST_DATA {
   id Int @id @default(autoincrement())
 
-  userId Int @unique
-
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  userId Int 
 
   title String @db.VarChar(255)
 

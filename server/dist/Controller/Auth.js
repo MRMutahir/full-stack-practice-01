@@ -91,7 +91,7 @@ const login = async (req, res, next) => {
         if (!pass) {
             return sendResponse(res, 401, false, "Invalid password");
         }
-        const token = await generateJwtToken(email);
+        const token = await generateJwtToken({ email: user?.email, id: user?.id });
         return sendResponse(res, 200, true, "Login successful", {
             token: `Bearer ${token}`,
         });
@@ -127,4 +127,14 @@ const checkLogin = async (req, res, next) => {
         next(error);
     }
 };
-export { register, verifyAccount, login, checkLogin };
+const TestForm = async (req, res, next) => {
+    try {
+        const body = req.body;
+        console.log('body', body);
+        return sendResponse(res, 200, true, "Login successful");
+    }
+    catch (error) {
+        next(error);
+    }
+};
+export { register, verifyAccount, login, checkLogin, TestForm };

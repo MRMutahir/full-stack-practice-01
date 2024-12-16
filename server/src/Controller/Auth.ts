@@ -15,7 +15,7 @@ import {
   verifyPassword,
 } from "../Helpers/helper.js";
 import { emailQueue, emailQueueName } from "../jobs/EmailsJob.js";
-import { string } from "zod";
+import { number, string } from "zod";
 
 const register = async (
   req: Request,
@@ -51,11 +51,10 @@ const register = async (
       token_send_at: new Date().toISOString(),
     };
 
-    const url = `${
-      process.env.Account_Verify_Url_Frontend
-    }/verify-account?email=${encodeURIComponent(
-      payload.email
-    )}&token=${encodeURIComponent(token)}`;
+    const url = `${process.env.Account_Verify_Url_Frontend
+      }/verify-account?email=${encodeURIComponent(
+        payload.email
+      )}&token=${encodeURIComponent(token)}`;
 
     const html = await emailRenderEjs("account-verify", {
       name: payload.name,
@@ -161,7 +160,7 @@ const login = async (
       return sendResponse(res, 401, false, "Invalid password");
     }
 
-    const token = await generateJwtToken(email);
+    const token = await generateJwtToken({ email: user?.email, id: user?.id });
 
     return sendResponse(res, 200, true, "Login successful", {
       token: `Bearer ${token}`,
@@ -210,4 +209,22 @@ const checkLogin = async (
     next(error);
   }
 };
-export { register, verifyAccount, login , checkLogin};
+
+
+
+const TestForm = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
+  try {
+    const body = req.body
+    console.log('body', body)
+    return sendResponse(res, 200, true, "Login successful");
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export { register, verifyAccount, login, checkLogin, TestForm };

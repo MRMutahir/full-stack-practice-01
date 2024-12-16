@@ -43,14 +43,10 @@ const verifyPassword = async (loginPassword, hashedPassword) => {
     const isMatch = await bcrypt.compare(loginPassword, hashedPassword);
     return isMatch;
 };
-const generateJwtToken = async (email) => {
+const generateJwtToken = async (user) => {
     const secret = process.env.JWT_SECRET;
     const expiresIn = "1d";
-    const payload = { email };
-    const token = jwt.sign(payload, secret, { expiresIn });
-    return token;
+    const payload = { email: user.email, id: user.id };
+    return jwt.sign(payload, secret, { expiresIn });
 };
-const checkReqFile = async (file) => {
-    console.log('file', file);
-};
-export { formateError, emailRenderEjs, sendResponse, hashPassword, generateVerifyAccountToken, VerifyAccountToken, verifyPassword, generateJwtToken, checkReqFile };
+export { formateError, emailRenderEjs, sendResponse, hashPassword, generateVerifyAccountToken, VerifyAccountToken, verifyPassword, generateJwtToken };
