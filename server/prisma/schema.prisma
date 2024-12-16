@@ -31,4 +31,26 @@ model User {
   email_verify_token String?
 
   created_at DateTime @default(now())
+
+  isVerified Boolean    @default(false)
+  
+  POST_DATA  POST_DATA[]
+}
+
+model POST_DATA {
+  id Int @id @default(autoincrement())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  userId Int 
+
+  title String @db.VarChar(255)
+
+  description String?
+
+  image String
+
+  created_at DateTime @default(now())
+
+  expire_at DateTime
 }
