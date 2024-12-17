@@ -1,6 +1,7 @@
 import { prisma } from "../config/database.js";
 import { sendResponse } from "../Helpers/helper.js";
 import { PostValidator } from "../Validator/Post.js";
+import { removeFile } from "../middleware/uploadFileUseMulter.js";
 // Controller function for registering a post
 const register = async (req, res, next) => {
     try {
@@ -58,21 +59,68 @@ const getPostById = async (req, res, next) => {
 const updatePostById = async (req, res, next) => {
     try {
         const id = parseInt(req.params.id, 10);
-        // console.log('id', id)
-        // const file = req?.file;
-        // if (file) {
-        //     console.log('file', file)
-        // }
-        // if (isNaN(id)) {
-        //     sendResponse(res, 400, false, "Invalid post ID");
-        // }
-        // const post = await prisma.pOST_DATA.findUnique({
-        //     where: { id },
-        // });
-        // if (!post) {
-        //     sendResponse(res, 404, false, "Post not found");
-        // }
-        sendResponse(res, 200, true, "Post retrieved successfully");
+        const body = req.body;
+        const validatedData = PostValidator.parse(body);
+        await prisma.pOST_DATA.update({
+            where: { id },
+            data: {
+                ...validatedData,
+                expire_at: new Date()
+            },
+        });
+        sendResponse(res, 200, true, "Post updated successfully");
+    }
+    catch (error) {
+        next(error);
+    }
+};
+const updateImage = async (req, res, next) => {
+    try {
+        const id = parseInt(req.params.id, 10);
+        const file = req.file;
+        if (!file) {
+            sendResponse(res, 400, false, "No file provided");
+        }
+        const post = await prisma.pOST_DATA.findUnique({
+            select: { image: true },
+            where: { id },
+        });
+        if (!post) {
+            await removeFile(file?.filename);
+            return sendResponse(res, 404, false, "Post not found");
+        }
+        else {
+            await removeFile(post.image);
+        }
+        const updatePost = await prisma.pOST_DATA.update({
+            where: { id },
+            data: { image: file?.filename },
+        });
+        if (updatePost) {
+            sendResponse(res, 200, true, "Image updated successfully");
+        }
+        else {
+            sendResponse(res, 400, false, "Some thing went wrong Image not updated");
+        }
+    }
+    catch (error) {
+        next(error);
+    }
+};
+const deletePost = async (req, res, next) => {
+    try {
+        const id = parseInt(req.params.id, 10);
+        const isPostDeleted = await prisma.pOST_DATA.delete({
+            select: { image: true },
+            where: { id },
+        });
+        if (isPostDeleted) {
+            removeFile(isPostDeleted?.image);
+            sendResponse(res, 200, true, "Post Deleted successfully");
+        }
+        else {
+            sendResponse(res, 400, false, "Some thing went wrong post not deleted");
+        }
     }
     catch (error) {
         next(error);
@@ -82,6 +130,8 @@ const postController = {
     register,
     getPost,
     getPostById,
-    updatePostById
+    updatePostById,
+    updateImage,
+    deletePost
 };
 export { postController };
