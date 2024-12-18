@@ -1,8 +1,7 @@
-import CredentialsProvider from "next-auth/providers/credentials";
-import NextAuth, { AuthOptions, ISODateString } from "next-auth";
-import { signIn } from "next-auth/react";
+import { AuthOptions, ISODateString, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import axios from "axios";
+import Credentials from "next-auth/providers/credentials";
 import { LOGIN_URL } from "@/lib/APIsEndPoints";
 
 export type CustomSession = {
@@ -11,67 +10,65 @@ export type CustomSession = {
 };
 
 export type CustomUser = {
-  id?: string;
-  name?: string;
-  email?: string;
-  token?: string;
+  id?: string | null;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+  token?: string | null;
 };
 
-export const authOptions: AuthOptions = {
+const authOptions: AuthOptions = {
   pages: {
-    signIn: "/login"
+    signIn: "/login",
+    error: "/auth/error"
   },
 
-  providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        username: { label: "Username", type: "text" },
-        password: { label: "Password", type: "password" }
-      },
-      async authorize(credentials, req) {
-        try {
-          // API call with proper handling
-          const response = await axios.post(LOGIN_URL, credentials);
-          console.log('response', response)
-
-          // Assuming response contains user data in the 'data' field
-          const user = response.data;
-
-          if (user) {
-            return user;
-          } else {
-            throw new Error("Invalid credentials");
-          }
-        } catch (error) {
-          console.error("Login error:", error.message || error);
-
-          // Returning a dummy user if the API call fails
-          const dummyUser: CustomUser = {
-            id: "12345678",
-            email: "mutahir@gmail.com",
-            name: "Muhammad Mutahir"
-          };
-
-          return dummyUser;
-        }
-      }
-    })
-  ],
-
   callbacks: {
-    async session({ session, token }: { session: CustomSession; token: JWT }) {
-      session.user = token.user as CustomUser;
-      return session;
-    },
-
-    async jwt({ token, user }: { token: JWT; user: CustomUser | null }) {
+    async jwt({ token, user }: { token: JWT; user: CustomUser }) {
       if (user) {
         token.user = user;
       }
       return token;
-    }
-  }
+    },
+    async session({
+      session,
+      token,
+      user,
+    }: {
+      session: CustomSession;
+      token: JWT;
+      user: User;
+    }) {
+      session.user = token.user as CustomUser;
+      return session;
+    },
+  },
+  providers: [
+    Credentials({
+      name: "Welcome Back",
+      type: "credentials",
+
+      credentials: {
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "Enter your email",
+        },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials, req) {
+        const { data } = await axios.post(LOGIN_URL, credentials);
+        const user = data?.data;
+        if (user) {
+          return user;
+        } else {
+          return null;
+        }
+      },
+    }),
+    // ...add more providers here
+  ],
 };
 
-export default NextAuth(authOptions);
+
+export default authOptions;
