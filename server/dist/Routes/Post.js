@@ -6,4 +6,6 @@ PostRoutes.post("/register", upload.single("file"), uploadFile, postController.r
 PostRoutes.get("/get/all", postController.getPost);
 PostRoutes.get("/get/:id", postController.getPostById);
 PostRoutes.put("/update/:id", postController.updatePostById);
+PostRoutes.put("/update/image/:id", upload.single("file"), uploadFile, postController.updateImage);
+PostRoutes.delete("/delete/:id", postController.deletePost);
 export { PostRoutes };

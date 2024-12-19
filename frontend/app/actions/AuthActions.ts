@@ -45,15 +45,17 @@ const RegisterAction = async (prevState: any, formData: FormData) => {
   }
 };
 
-const LoginAction = async (prevState: any, formData: FormData) => {
+// /app/actions/AuthActions.js
+const LoginAction = async (prevState:any, formData:any) => {
+  // console.log('formData', formData)
   try {
     const { data } = await axios.post(CHECK_LOGIN, {
       email: formData.get("email"),
       password: formData.get("password"),
     });
+    // console.log('data', data)
 
     if (data) {
-      // console.log('data', data)
       return {
         status: 200,
         message: data?.message || "Login successful.",
@@ -65,23 +67,23 @@ const LoginAction = async (prevState: any, formData: FormData) => {
       };
     }
   } catch (error) {
-    if (error instanceof AxiosError) {
-      if (error?.response?.status! >= 400) {
-        return {
-          status: error.response?.status || 400,
-          message: error.response?.data.message,
-          errors: error.response?.data.errors,
-        };
-      }
-    } else {
+    // console.error('Error during login action', error);
+    if (axios.isAxiosError(error)) {
       return {
-        status: 500,
-        message: "Unexpected error occurred",
-        errors: {},
+        status: error.response?.status || 400,
+        message: error.response?.data?.message || "Invalid credentials",
+        errors: error.response?.data?.errors || {},
       };
     }
+
+    return {
+      status: 500,
+      message: "Unexpected error occurred",
+      errors: {},
+    };
   }
 };
+
 
 
 

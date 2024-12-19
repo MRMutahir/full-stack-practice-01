@@ -1,5 +1,6 @@
 import multer from "multer";
 import path from "path";
+import fs from "fs";
 // Allowed File Types
 const fileTypes = ["image/jpg", "image/jpeg", "image/png"];
 // Multer Storage Configuration
@@ -13,7 +14,7 @@ const storage = multer.diskStorage({
 // Multer Upload Middleware
 const upload = multer({
     storage,
-    limits: { fileSize: 1 * 1024 * 1024 }, // 1 MB file size limit
+    limits: { fileSize: 1 * 1024 * 1024 },
     fileFilter(req, file, callback) {
         if (!fileTypes.includes(file.mimetype)) {
             return callback(new multer.MulterError("LIMIT_UNEXPECTED_FILE"));
@@ -28,16 +29,18 @@ const uploadFile = async (req, res, next) => {
     }
     next();
 };
+const UPLOADS_BASE_DIR = path.resolve(process.cwd(), "uploads/images");
 const removeFile = async (filePath) => {
     try {
-        const absolutePath = path.join(__dirname, filePath); // Ensure absolute path
-        console.log('absolutePath', absolutePath);
-        //   if (fs.existsSync(absolutePath)) {
-        //     await fs.promises.unlink(absolutePath); // Delete the file
-        //     console.log("File deleted successfully");
-        //   } else {
-        //     console.log("File does not exist");
-        //   }
+        const absolutePath = path.join(UPLOADS_BASE_DIR, filePath);
+        // console.log('absolutePath', absolutePath)
+        if (fs.existsSync(absolutePath)) {
+            fs.unlinkSync(absolutePath);
+            console.log("File deleted successfully");
+        }
+        else {
+            console.log("File does not exist");
+        }
     }
     catch (error) {
         console.error("Error deleting file:", error);
