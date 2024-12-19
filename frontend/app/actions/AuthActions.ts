@@ -1,7 +1,10 @@
 "use server";
 
-import { CHECK_LOGIN, LOGIN_URL, REGISTER_URL } from "@/lib/APIsEndPoints";
+import { LOGIN_URL, REGISTER_URL } from "@/lib/APIsEndPoints";
+import { createSession, deleteSession } from "@/lib/session";
 import axios, { AxiosError } from "axios";
+import { redirect } from "next/navigation";
+
 
 const RegisterAction = async (prevState: any, formData: FormData) => {
   try {
@@ -46,25 +49,17 @@ const RegisterAction = async (prevState: any, formData: FormData) => {
 };
 
 // /app/actions/AuthActions.js
-const LoginAction = async (prevState:any, formData:any) => {
-  // console.log('formData', formData)
+const LoginAction = async (prevState: any, formData: any) => {
   try {
-    const { data } = await axios.post(CHECK_LOGIN, {
+    const { data } = await axios.post(LOGIN_URL, {
       email: formData.get("email"),
       password: formData.get("password"),
     });
-    // console.log('data', data)
 
     if (data) {
-      return {
-        status: 200,
-        message: data?.message || "Login successful.",
-        errors: {},
-        data: {
-          email: formData.get("email"),
-          password: formData.get("password"),
-        },
-      };
+      const token = data?.token
+      createSession(token);
+      // redirect("/dashboard");
     }
   } catch (error) {
     // console.error('Error during login action', error);
@@ -84,7 +79,10 @@ const LoginAction = async (prevState:any, formData:any) => {
   }
 };
 
+const logout = async () => {
+  await deleteSession();
+  redirect("/login");
+}
 
 
-
-export { RegisterAction, LoginAction };
+export { RegisterAction, LoginAction, logout };

@@ -11,11 +11,6 @@ import { signIn } from "next-auth/react";
 
 
 const LoginForm = () => {
-  const  NEXTAUTH_SECRET: string = process.env.NEXTAUTH_SECRET as string
-  const  NEXTAUTH_URL: string = process.env.NEXTAUTH_URL as string
-  // console.log('NEXTAUTH_URL ??? ', NEXTAUTH_URL)
-  // console.log('NEXTAUTH_SECRET ??', NEXTAUTH_SECRET)
-
 const [state, formAction] = useActionState(LoginAction, {
     status: 0,
     message: "",
@@ -46,11 +41,11 @@ const [state, formAction] = useActionState(LoginAction, {
     if (state && state.status) {
       const { email, password } = state?.data || {};
       if (state.status === 200 && email && password) {
-        // console.log('sahi state', state)
-        sendCredentials(email, password)
+        console.log('sahi state', state)
+        // sendCredentials(email, password)
+        
       } else if (state.status && state.status >= 400) {
         console.log('error state', state)
-        // console.log('state.message || Something went wrong', state.message || "Something went wrong")
         toast.error(state.message || "Something went wrong?");
       }
     }
