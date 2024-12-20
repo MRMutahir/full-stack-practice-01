@@ -1,9 +1,10 @@
 "use server";
-
+import { cookies } from 'next/headers'
 import { LOGIN_URL, REGISTER_URL } from "@/lib/APIsEndPoints";
 import { createSession, deleteSession } from "@/lib/session";
 import axios, { AxiosError } from "axios";
 import { redirect } from "next/navigation";
+import { NextResponse } from 'next/server';
 
 
 const RegisterAction = async (prevState: any, formData: FormData) => {
@@ -50,19 +51,25 @@ const RegisterAction = async (prevState: any, formData: FormData) => {
 
 // /app/actions/AuthActions.js
 const LoginAction = async (prevState: any, formData: any) => {
+  const cookieStore = await cookies()
   try {
     const { data } = await axios.post(LOGIN_URL, {
       email: formData.get("email"),
       password: formData.get("password"),
     });
+    console.log('data', data)
 
     if (data) {
-      const token = data?.token
-      createSession(token);
-      // redirect("/dashboard");
+      const token: string = data?.data?.token
+      const tokenSplit = token.split(" ")[1]
+      cookieStore.set('token', tokenSplit)
+      return {
+        status: data.response?.status || 200,
+        message: data.response?.data?.message || "Login successfully",
+      }
     }
   } catch (error) {
-    // console.error('Error during login action', error);
+    console.error('Error during login action', error);
     if (axios.isAxiosError(error)) {
       return {
         status: error.response?.status || 400,
