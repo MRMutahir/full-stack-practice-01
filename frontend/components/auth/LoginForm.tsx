@@ -44,7 +44,7 @@ const [state, formAction] = useActionState(LoginAction, {
         toast.success(state.message);
         router.push("/dashboard");
       } else if (state.status && state.status >= 400) {
-        console.log('error state', state)
+        // console.log('error state', state)
         toast.error(state.message || "Something went wrong?");
       }
     }

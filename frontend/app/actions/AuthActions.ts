@@ -1,10 +1,9 @@
 "use server";
 import { cookies } from 'next/headers'
 import { LOGIN_URL, REGISTER_URL } from "@/lib/APIsEndPoints";
-import { createSession, deleteSession } from "@/lib/session";
 import axios, { AxiosError } from "axios";
-import { redirect } from "next/navigation";
-import { NextResponse } from 'next/server';
+
+
 
 
 const RegisterAction = async (prevState: any, formData: FormData) => {
@@ -57,7 +56,6 @@ const LoginAction = async (prevState: any, formData: any) => {
       email: formData.get("email"),
       password: formData.get("password"),
     });
-    // console.log('data', data)
 
     if (data) {
       const token: string = data?.data?.token
@@ -69,7 +67,7 @@ const LoginAction = async (prevState: any, formData: any) => {
       }
     }
   } catch (error) {
-    console.error('Error during login action', error);
+    // console.error('Error during login action', error);
     if (axios.isAxiosError(error)) {
       return {
         status: error.response?.status || 400,
@@ -87,8 +85,8 @@ const LoginAction = async (prevState: any, formData: any) => {
 };
 
 const logout = async () => {
-  await deleteSession();
-  redirect("/login");
+  console.log("Logout");
+
 }
 
 
