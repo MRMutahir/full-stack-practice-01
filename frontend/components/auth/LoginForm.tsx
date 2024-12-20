@@ -8,9 +8,11 @@ import SubmitBtn from "../common/SubmitBtn";
 import Link from "next/link";
 import { toast } from "sonner";
 import { signIn } from "next-auth/react";
+import { useRouter } from 'next/navigation'
 
 
 const LoginForm = () => {
+  const router = useRouter(); 
 const [state, formAction] = useActionState(LoginAction, {
     status: 0,
     message: "",
@@ -37,13 +39,10 @@ const [state, formAction] = useActionState(LoginAction, {
   
 
   useEffect(() => {
-    // console.log('useEffect mr')
     if (state && state.status) {
-      const { email, password } = state?.data || {};
-      if (state.status === 200 && email && password) {
-        console.log('sahi state', state)
-        // sendCredentials(email, password)
-        
+      if (state.status === 200) {
+        toast.success(state.message);
+        router.push("/dashboard");
       } else if (state.status && state.status >= 400) {
         console.log('error state', state)
         toast.error(state.message || "Something went wrong?");

@@ -17,15 +17,7 @@ const createSession = async (token: string): Promise<void> => {
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
     const session = await encrypt({ token, expiresAt });
     console.log('session', session)
-    // console.log('cookieStore', cookieStore.)
-    console.log('await cookies()', (await cookies()).set({ "name": session }))
 
-    cookies().cookies = { "session": session }
-    // ("session", session, {
-    //     httpOnly: true,
-    //     secure: true,
-    //     expires: expiresAt,
-    // });
 };
 
 
