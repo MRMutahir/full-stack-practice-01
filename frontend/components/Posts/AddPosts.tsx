@@ -1,4 +1,5 @@
 "use client";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,11 +13,18 @@ import { Button } from "../ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Calendar } from "@/components/ui/calendar";
 import React from "react";
+import DatePicker from "./DatePicker";
+import { PostsAction } from "@/app/actions/PostAction";
+import { useActionState } from "react";
 
 const AddPosts = () => {
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const [state, formAction] = useActionState(PostsAction, {
+    status: 0,
+    message: "",
+    errors: {},
+  });
+
   return (
     <>
       <AlertDialog>
@@ -25,29 +33,33 @@ const AddPosts = () => {
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <form>
+            <form action={formAction}>
               <div className="">
                 <Label htmlFor="title">Title</Label>
                 <Input
+                  id="title"
+                  name="title" // Add name attribute for server action
                   className="mt-2"
                   placeholder="Type clash title"
-                  //   value={clashData?.title ?? ""}
                 />
               </div>
-              <div className="">
+              <div className="mt-4">
                 <Label htmlFor="description">Description</Label>
-                <Textarea className="mt-2" />
-              </div>
-              <div className="">
-                <Label htmlFor="date">Expire</Label>
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  className="rounded-md border"
+                <Textarea
+                  id="description"
+                  name="description" // Add name attribute for server action
+                  className="mt-2"
                 />
               </div>
-            </form>{" "}
+              <div className="mt-4">
+                <Label htmlFor="date">Expire</Label>
+                <br />
+                <DatePicker name="expireDate" /> {/* Ensure DatePicker passes value */}
+              </div>
+              <div className="mt-4">
+                <Button type="submit">Submit</Button>
+              </div>
+            </form>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
